@@ -20,8 +20,38 @@ namespace _6LetterWordChallange.Controllers
 
         public IActionResult Index()
         {
+            ViewData["output"] = WordAssembler();
             return View();
         }
+
+        private string WordAssembler()
+        {
+            string[] lines = null;
+            //read all lines from txt file into string array
+            try
+            {
+                lines = System.IO.File.ReadAllLines(@"..\6LetterWordChallange\Data\input.txt");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            if (lines != null)
+            {
+                WordAssembler wordAssembler = new WordAssembler();
+                List<int> countCharList = wordAssembler.CountChar(lines);
+                List<string> completedWordsList = wordAssembler.GetCompleteWords(lines, countCharList.ToArray());
+                List<string> wordPiecesList = wordAssembler.GetWordPieces(lines, countCharList.ToArray());
+                string output = wordAssembler.GenerateOutput(wordPiecesList, completedWordsList);
+                return output;
+            }
+            else
+            {
+                return "something went wrong";
+            }
+        }
+
 
         public IActionResult Privacy()
         {
